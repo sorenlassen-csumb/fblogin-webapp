@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Facebook Login JavaScript Example</title>
+<title>Test1 login</title>
 <meta charset="UTF-8">
 </head>
 <body>
@@ -13,10 +13,27 @@
     // for FB.getLoginStatus().
     if (response.status === 'connected') {
       // Logged into your app and Facebook.
-      testAPI();
+      window.location.replace("/index.html");
+    } else if (response.status === 'not_authorized') {
+      // The person is logged into Facebook, but not your app.
+      document.getElementById('status').innerHTML = 'Please log ' +
+        'into this app.';
     } else {
-      window.location.replace("/login.html");
+      // The person is not logged into Facebook, so we're not sure if
+      // they are logged into this app or not.
+      document.getElementById('status').innerHTML = 'Please log ' +
+        'into Facebook.';
     }
+  }
+
+  // This function is called when someone finishes with the Login
+  // Button.  See the onlogin handler attached to it in the sample
+  // code below.
+  function checkLoginState() {
+    FB.getLoginStatus(function(response) {
+      console.log('login status on login:', response);
+      statusChangeCallback(response);
+    });
   }
 
   window.fbAsyncInit = function() {
@@ -55,29 +72,6 @@
     js.src = "//connect.facebook.net/en_US/sdk.js";
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
-
-  // Here we run a very simple test of the Graph API after login is
-  // successful.  See statusChangeCallback() for when this call is made.
-  function testAPI() {
-    console.log('Welcome!  Fetching your information.... ');
-    FB.api('/me', function(response) {
-      console.log('/me: ', response);
-      document.getElementById('status').innerHTML =
-        'You are logged in as ' + response.name + '.';
-    });
-  }
-
-  function deauthorize() {
-    FB.api('/me/permissions',
-           'DELETE',
-           function(response) {
-             console.log('/me/permissions deleted:', response);
-             FB.getLoginStatus(function(response) {
-               console.log('login status after deauthorize:', response);
-               statusChangeCallback(response);
-             }, true /*flush cached login status*/);
-           });
-  }
 </script>
 
 <!--
@@ -86,11 +80,11 @@
   the FB.login() function when clicked.
 -->
 
+<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+</fb:login-button>
+
 <div id="status">
 </div>
-
-<button onclick="deauthorize();">Deauthorize app
-</button>
 
 </body>
 </html>

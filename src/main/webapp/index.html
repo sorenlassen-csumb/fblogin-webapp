@@ -83,6 +83,18 @@
         'Thanks for logging in, ' + response.name + '!';
     });
   }
+
+  function deauthorize() {
+    FB.api('/me/permissions',
+           'DELETE',
+           function(response) {
+             console.log('/me/permissions deleted:', response);
+             FB.getLoginStatus(function(response) {
+               console.log('login status after deauthorize:', response);
+               statusChangeCallback(response);
+             }, true /*flush cached login status*/);
+           });
+  }
 </script>
 
 <!--
@@ -96,6 +108,9 @@
 
 <div id="status">
 </div>
+
+<button onclick="deauthorize();">Deauthorize app
+</button>
 
 </body>
 </html>

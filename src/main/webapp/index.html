@@ -60,11 +60,15 @@
   // successful.  See statusChangeCallback() for when this call is made.
   function testAPI() {
     console.log('Welcome!  Fetching your information.... ');
-    FB.api('/me', function(response) {
-      console.log('/me: ', response);
-      document.getElementById('status').innerHTML =
-        'You are logged in as ' + response.name + '.';
-    });
+    FB.api('/me',
+           {fields: 'name,picture'},
+           function(response) {
+             console.log('/me: ', response);
+             document.getElementById('profilepic').src =
+               response.picture.data.url;
+             document.getElementById('status').innerHTML =
+               'You are logged in as ' + response.name + '.';
+           });
   }
 
   function deauthorize() {
@@ -86,6 +90,7 @@
   the FB.login() function when clicked.
 -->
 
+<img id="profilepic" src="" />
 <div id="status">
 </div>
 
